@@ -1,0 +1,88 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: always
+    container_name: qdrant
+    ports:
+      - 6333:6333
+      - 6334:6334
+    expose:
+      - 6333
+      - 6334
+      - 6335
+    configs:
+      - source: qdrant_config
+        target: /qdrant_config.yaml
+    volumes:
+      - ./qdrant_data:/qdrant/storage
+    command: ["./qdrant", "--config-path", "/qdrant_config.yaml"]
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        ollama serve &
+        sleep 10
+        ollama run llama3.2 &
+        tail -f /dev/null
+
+  fastapi:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+      - qdrant
+      - ollama
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/postgres
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: 6333
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_HOST: http://ollama:11434
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - fastapi
+
+volumes:
+  postgres_data:
+  qdrant_data:
+  ollama_data:
+
+configs:
+  qdrant_config:
+    content: |
+      log_level: INFO

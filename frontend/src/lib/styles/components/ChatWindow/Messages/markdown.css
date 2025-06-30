@@ -1,0 +1,185 @@
+@import './Markdown/images.css';
+@import './Markdown/tables.css';
+@import './Markdown/lists.css';
+@import './Markdown/math.css';
+@import './Markdown/inline.css';
+
+:root {
+  /* Spacing System */
+  --base-spacing: 1rem;
+  --spacing-xs: calc(var(--base-spacing) * 0.25);
+  --spacing-sm: calc(var(--base-spacing) * 0.5);
+  --spacing-md: var(--base-spacing);
+  --spacing-lg: calc(var(--base-spacing) * 1.5);
+  --spacing-xl: calc(var(--base-spacing) * 2);
+  
+  /* Typography */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* Layout */
+  --message-max-width: 70%;
+  --message-min-width: 300px;
+  
+  /* Colors - Dark Theme */
+  --text-primary: rgba(255, 255, 255, 0.9);
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --bg-subtle: rgba(255, 255, 255, 0.02);
+  --bg-hover: rgba(255, 255, 255, 0.03);
+  --bg-elevated: rgba(255, 255, 255, 0.06);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --link-color: #60a5fa;
+  --code-bg: rgba(255, 255, 255, 0.08);
+}
+
+/* ===== Base Message Styles ===== */
+.message-container {
+  display: flex;
+  width: 100%;
+  margin-bottom: var(--spacing-md);
+  padding: 0 var(--spacing-md);
+  box-sizing: border-box;
+}
+
+.message {
+  border-radius: 16px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.message-content {
+  padding: var(--spacing-md) var(--spacing-lg);
+  box-sizing: border-box;
+  width: 100%;
+  line-height: var(--line-height-normal);
+  display: grid;
+  grid-template-rows: auto;
+  min-height: 0;
+}
+
+/* ===== Markdown Content Container ===== */
+:global(.markdown-content) {
+  display: grid;
+  font-size: 16px;
+  line-height: var(--line-height-normal);
+  color: var(--text-primary);
+}
+
+:global(.markdown-content > *) {
+  margin: var(--spacing-md) 0;
+}
+
+:global(.markdown-content > *:first-child) {
+  margin-top: 0;
+}
+
+:global(.markdown-content > *:last-child) {
+  margin-bottom: 0;
+}
+
+:global(.markdown-inline-only) {
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
+/* Ensure inline-only code blocks don't create new lines */
+:global(.markdown-inline-only + .markdown-paragraph),
+:global(.markdown-paragraph + .markdown-inline-only) {
+	display: inline;
+}
+
+/* Optional: if you want some spacing between consecutive inline elements */
+:global(.markdown-inline-only + .markdown-inline-only) {
+	margin-left: 0.5em;
+}
+
+
+/* ===== Cursor Animation ===== */
+.cursor {
+  width: 2px;
+  height: 1.2em;
+  background: var(--text-primary);
+  margin-left: var(--spacing-xs);
+  margin-right: -2px;
+  border-radius: 1px;
+  animation: blink 1s ease-in-out infinite;
+  vertical-align: middle;
+}
+
+/* ===== Animations ===== */
+@keyframes blink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+@keyframes slideIndicator {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 1024px) {
+  :root {
+    --message-max-width: 85%;
+  }
+
+  .message-content {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  /* Responsive images */
+  :global(.markdown-content img) {
+    max-height: 350px;
+  }
+  
+  :global(.markdown-paragraph img) {
+    max-height: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --message-max-width: 90%;
+    --base-spacing: 0.875rem;
+  }
+  
+  /* Responsive Lists */
+  :global(.markdown-list) {
+    padding-left: var(--spacing-lg);
+  }
+  
+  :global(.markdown-list .markdown-list) {
+    padding-left: var(--spacing-md);
+  }
+  
+  /* Responsive Tables */
+  :global(.markdown-table) {
+    font-size: 0.875em;
+  }
+  
+  :global(.markdown-table th),
+  :global(.markdown-table td) {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    white-space: normal;
+  }
+  
+  :global(.markdown-table-wrapper) {
+    margin: var(--spacing-md) calc(-1 * var(--spacing-md));
+    border-radius: 0;
+    box-shadow: none;
+  }
+  
+  /* Mobile images */
+  :global(.markdown-content img) {
+    max-height: 300px;
+    margin: var(--spacing-sm) auto;
+  }
+  
+  :global(.markdown-paragraph img) {
+    max-height: 200px;
+  }
+}

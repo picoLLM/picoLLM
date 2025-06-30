@@ -1,0 +1,160 @@
+.thinking-wrapper {
+		margin: 0.75rem 0;
+		border-radius: 8px;
+		background: rgba(130, 170, 255, 0.05);
+		border: 1px solid rgba(130, 170, 255, 0.15);
+		overflow: hidden;
+		contain: layout style;
+		transform: translateZ(0);
+	}
+
+	.thinking-wrapper.light {
+		background: rgba(59, 130, 246, 0.05);
+		border-color: rgba(59, 130, 246, 0.15);
+	}
+
+	.thinking-toggle {
+		width: 100%;
+		padding: 0.75rem 1rem;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		text-align: left;
+		font-family: inherit;
+		font-size: 0.875rem;
+		color: #82aaff;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		position: relative;
+		z-index: 2;
+	}
+
+	.thinking-wrapper.light .thinking-toggle {
+		color: #3b82f6;
+	}
+
+	.thinking-toggle:hover {
+		background: rgba(130, 170, 255, 0.08);
+	}
+
+	.thinking-wrapper.light .thinking-toggle:hover {
+		background: rgba(59, 130, 246, 0.08);
+	}
+
+	.chevron {
+		flex-shrink: 0;
+		transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.thinking-toggle.expanded .chevron {
+		transform: rotate(180deg);
+	}
+
+	.thinking-label {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-weight: 500;
+	}
+
+	.pulse-dot {
+		width: 6px;
+		height: 6px;
+		background: currentColor;
+		border-radius: 50%;
+		position: relative;
+	}
+
+	.pulse-dot::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: inherit;
+		border-radius: inherit;
+		animation: pulse 1.5s ease-out infinite;
+	}
+
+	@keyframes pulse {
+		0% { transform: scale(1); opacity: 1; }
+		100% { transform: scale(2.5); opacity: 0; }
+	}
+
+	.line-count {
+		font-size: 0.75rem;
+		opacity: 0.6;
+		margin-left: auto;
+	}
+
+	.thinking-content-wrapper {
+		max-height: 400px;
+		overflow: hidden;
+		transition: max-height 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.thinking-content-wrapper.collapsed {
+		max-height: 0;
+	}
+
+	.thinking-content {
+		padding: 0 1rem 1rem 1rem;
+		color: #c9d1d9;
+		line-height: 1.6;
+		font-size: 0.875rem;
+		opacity: 0.9;
+		max-height: 400px;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		scroll-behavior: auto;
+		contain: layout;
+	}
+
+	.thinking-content.hidden {
+		visibility: hidden;
+		pointer-events: none;
+	}
+
+	.thinking-wrapper.light .thinking-content {
+		color: #374151;
+	}
+
+	.thinking-content :global(p) {
+		margin: 0.5rem 0;
+	}
+
+	.thinking-content :global(p:first-child) {
+		margin-top: 0;
+	}
+
+	.thinking-content :global(p:last-child) {
+		margin-bottom: 0;
+	}
+
+	.thinking-content :global(code) {
+		background: rgba(130, 170, 255, 0.1);
+		padding: 0.125rem 0.25rem;
+		border-radius: 3px;
+		font-size: 0.85em;
+	}
+
+	.thinking-wrapper.light .thinking-content :global(code) {
+		background: rgba(59, 130, 246, 0.1);
+	}
+
+	.thinking-content::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	.thinking-content::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.thinking-content::-webkit-scrollbar-thumb {
+		background: rgba(130, 170, 255, 0.3);
+		border-radius: 3px;
+	}
+
+	.thinking-wrapper.light .thinking-content::-webkit-scrollbar-thumb {
+		background: rgba(59, 130, 246, 0.3);
+	}

@@ -1,0 +1,46 @@
+/* markdown styles */
+:global(.inline-code) {
+	color: #89ddff;
+	background: rgba(137, 221, 255, 0.08);
+	padding: 0.1em 0.2em; /* Reduced padding for tighter spacing */
+	border-radius: 3px;
+	font-family: var(--code-font, 'Fira Code', monospace);
+	font-size: 0.9em;
+	display: inline;
+	line-height: inherit;
+	vertical-align: baseline;
+	/* Prevent extra spacing */
+	margin: 0;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+/* Adjust spacing when inline code is at start/end of block */
+:global(p > .inline-code:first-child) {
+	margin-left: -0.1em; /* Compensate for left padding */
+}
+
+:global(p > .inline-code:last-child) {
+	margin-right: -0.1em; /* Compensate for right padding */
+}
+
+/* Remove duplicate rule - consolidate into main .inline-code */
+:global(.markdown-text) {
+	line-height: inherit;
+}
+
+:global(.markdown-text p) {
+	margin: 0;
+}
+
+/* Dark theme specifics */
+:global(.dark .inline-code) {
+	background: rgba(137, 221, 255, 0.1);
+	border-color: rgba(137, 221, 255, 0.2);
+}
+
+/* Light theme specifics */
+:global(.light .inline-code) {
+	background: rgba(137, 221, 255, 0.15);
+	border-color: rgba(137, 221, 255, 0.3);
+}

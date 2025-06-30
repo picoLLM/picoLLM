@@ -1,0 +1,162 @@
+/* Use same chat width variable */
+:root {
+  --chat-max-width: min(900px, 100vw);
+  --chat-padding: clamp(1rem, 3vw, 2rem);
+  --topbar-ref-width: min(900px, 100vw); /* Fixed reference for top bar */
+}
+
+.top-bar {
+  background-color: #1e1e1e;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #2a2a2a;
+  position: relative;
+}
+
+.left-section {
+  flex-grow: 1;
+  margin-right: 16px;
+}
+
+/* Match responsive breakpoints from chat layout */
+@media (max-width: 1400px) {
+  :root {
+    --chat-max-width: min(850px, 100vw);
+    --topbar-ref-width: min(850px, 100vw);
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --chat-padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --chat-padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --chat-padding: 0.75rem;
+  }
+}
+
+/* Ultra-wide screens - chat expands but topbar stays fixed */
+@media (min-width: 1800px) {
+  :root {
+    --chat-max-width: min(1200px, 90vw);
+    /* topbar-ref-width stays at 900px */
+  }
+}
+
+@media (min-width: 2400px) {
+  :root {
+    --chat-max-width: min(1400px, 85vw);
+    /* topbar-ref-width stays at 900px */
+  }
+}
+
+/* Left-align model selector with chat content - Desktop */
+@media (min-width: 1201px) {
+  .top-bar {
+    justify-content: flex-start;
+    padding-left: calc((100vw - var(--topbar-ref-width)) / 2);
+    padding-right: 16px;
+  }
+  
+  .left-section {
+    flex-grow: 0;
+    width: var(--topbar-ref-width);
+    max-width: var(--topbar-ref-width);
+    margin: 0;
+    padding-left: var(--chat-padding);
+    box-sizing: border-box;
+  }
+  
+  .actions {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+/* Mobile/Tablet behavior */
+@media (max-width: 1200px) {
+  :root {
+    --chat-max-width: 100%;
+    --topbar-ref-width: 100%;
+  }
+  
+  .top-bar {
+    justify-content: space-between;
+    padding: 8px 16px;
+  }
+  
+  .left-section {
+    flex-grow: 1;
+    margin-right: 16px;
+    padding: 0;
+    width: auto;
+    max-width: none;
+  }
+  
+  .actions {
+    position: static;
+    transform: none;
+  }
+}
+
+/* Actions and buttons */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.model-status {
+  display: flex;
+  align-items: center;
+}
+
+.model-status.active :global(svg) {
+  color: #4CAF50;
+}
+
+.model-status.inactive :global(svg) {
+  color: #F44336;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  color: #a0a0a0;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.icon-button:hover {
+  color: #ffffff;
+}
+
+.icon-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.5);
+}
+
+.icon-button:focus-visible {
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.5);
+}
+
+.icon-button:focus:not(:focus-visible) {
+  box-shadow: none;
+}

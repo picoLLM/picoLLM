@@ -1,0 +1,353 @@
+.code-highlighter {
+    position: relative;
+    width: 100%;
+    border-radius: 8px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    color: var(--text);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    contain: layout size style;
+}
+
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.75rem;
+    background: rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid var(--border);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.75rem;
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.language-tag {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    font-family: sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    text-transform: lowercase;
+    white-space: nowrap;
+}
+
+.copy-button {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    background: transparent;
+    border: none;
+    border-radius: 3px;
+    padding: 0.25rem 0.4rem;
+    color: var(--text);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+    white-space: nowrap;
+    margin-left: auto;
+}
+
+.copy-button:hover {
+    background: var(--button);
+    opacity: 1;
+}
+
+.button-content {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.code-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    contain: content;
+    display: grid;
+}
+
+.code-content {
+    width: 100%;
+    min-width: 0;
+    contain: content;
+    position: relative;
+    display: grid;
+}
+
+.hljs-pre {
+    margin: 0;
+    padding: 1rem;
+    background: transparent;
+    white-space: pre;
+    tab-size: 4;
+    line-height: 1.5;
+    font-family: inherit;
+    letter-spacing: 0.3px;
+    overflow-x: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+:global(.hljs) {
+    background: transparent !important;
+    padding: 0 !important;
+    font-family: inherit !important;
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+    color: var(--text) !important;
+}
+
+:global(.line-number) {
+    display: inline-flex;
+    align-items: center;
+    padding-right: 1em;
+    min-width: 2em;
+    text-align: right;
+    color: var(--text);
+    opacity: 0.5;
+    user-select: none;
+    border-right: 1px solid var(--border);
+    margin-right: 1em;
+    font-family: inherit;
+}
+
+.error-message {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem;
+    background: #ff5555;
+    color: white;
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+.code-content::-webkit-scrollbar,
+pre::-webkit-scrollbar,
+code::-webkit-scrollbar,
+.highlight::-webkit-scrollbar,
+.hljs::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.code-content::-webkit-scrollbar-thumb,
+pre::-webkit-scrollbar-thumb,
+code::-webkit-scrollbar-thumb,
+.highlight::-webkit-scrollbar-thumb,
+.hljs::-webkit-scrollbar-thumb {
+  background: rgba(155, 155, 155, 0.4);
+  border-radius: 10px;  /* Fully rounded */
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    background-clip: content-box;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+    background-clip: content-box;
+  }
+  
+  * {
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  }
+}
+/* ===== BASE THEME SYNTAX HIGHLIGHTING ===== */
+/* Following highlight.js theming guidelines */
+
+/* Base text and substitutions */
+:global(.hljs),
+:global(.hljs-subst) {
+    color: var(--syntax-base) !important;
+}
+
+/* Keywords */
+:global(.hljs-keyword),
+:global(.hljs-selector-tag),
+:global(.hljs-literal),
+:global(.hljs-section),
+:global(.hljs-link) {
+    color: var(--syntax-keyword) !important;
+}
+
+/* Functions */
+:global(.hljs-title),
+:global(.hljs-built_in) {
+    color: var(--syntax-function) !important;
+}
+
+/* Strings */
+:global(.hljs-string),
+:global(.hljs-meta .hljs-string),
+:global(.hljs-regexp),
+:global(.hljs-template-tag),
+:global(.hljs-template-variable) {
+    color: var(--syntax-string) !important;
+}
+
+/* Variables and attributes */
+:global(.hljs-variable),
+:global(.hljs-params),
+:global(.hljs-attr),
+:global(.hljs-attribute),
+:global(.hljs-selector-attr),
+:global(.hljs-selector-pseudo),
+:global(.hljs-name) {
+    color: var(--syntax-variable) !important;
+}
+
+/* Types */
+:global(.hljs-type),
+:global(.hljs-class .hljs-title),
+:global(.hljs-selector-class),
+:global(.hljs-selector-id) {
+    color: var(--syntax-type) !important;
+}
+
+/* Comments */
+:global(.hljs-comment),
+:global(.hljs-quote) {
+    color: var(--syntax-comment) !important;
+    font-style: italic;
+}
+
+/* Numbers */
+:global(.hljs-number),
+:global(.hljs-literal),
+:global(.hljs-meta .hljs-number) {
+    color: var(--syntax-number) !important;
+}
+
+/* Meta and decorators */
+:global(.hljs-meta),
+:global(.hljs-meta-keyword),
+:global(.hljs-decorator) {
+    color: var(--syntax-decorator) !important;
+}
+
+/* Module names after import/from - custom theme */
+:global(.hljs-name.module-name) {
+    color: var(--syntax-type) !important; /* Using type color (green) for module names */
+}
+
+/* Operators and punctuation */
+:global(.hljs-operator),
+:global(.hljs-punctuation),
+:global(.hljs-symbol),
+:global(.hljs-bullet) {
+    color: var(--syntax-operator) !important;
+}
+
+/* ===== VS CODE THEME OVERRIDES ===== */
+
+/* Base text */
+:global(.vscode-theme .hljs),
+:global(.vscode-theme .hljs-subst) {
+    color: var(--vscode-base) !important;
+}
+
+/* Keywords */
+:global(.vscode-theme .hljs-keyword),
+:global(.vscode-theme .hljs-selector-tag),
+:global(.vscode-theme .hljs-literal),
+:global(.vscode-theme .hljs-section),
+:global(.vscode-theme .hljs-link) {
+    color: var(--vscode-keyword) !important;
+}
+
+/* Special handling for import/from/as keywords */
+:global(.vscode-theme .hljs-keyword[data-keyword="import"]),
+:global(.vscode-theme .hljs-keyword[data-keyword="from"]),
+:global(.vscode-theme .hljs-keyword[data-keyword="as"]) {
+    color: var(--vscode-module) !important;
+}
+
+/* Module names after import/from */
+:global(.vscode-theme .hljs-keyword[data-keyword="import"] + .hljs-name),
+:global(.vscode-theme .hljs-keyword[data-keyword="from"] + .hljs-name),
+:global(.vscode-theme .hljs-name.module-name) {
+    color: var(--vscode-namespace) !important;
+}
+
+/* Functions */
+:global(.vscode-theme .hljs-title),
+:global(.vscode-theme .hljs-built_in) {
+    color: var(--vscode-function) !important;
+}
+
+/* Strings */
+:global(.vscode-theme .hljs-string),
+:global(.vscode-theme .hljs-meta .hljs-string),
+:global(.vscode-theme .hljs-regexp),
+:global(.vscode-theme .hljs-template-tag),
+:global(.vscode-theme .hljs-template-variable) {
+    color: var(--vscode-string) !important;
+}
+
+/* Variables */
+:global(.vscode-theme .hljs-variable),
+:global(.vscode-theme .hljs-params),
+:global(.vscode-theme .hljs-attr),
+:global(.vscode-theme .hljs-attribute),
+:global(.vscode-theme .hljs-selector-attr),
+:global(.vscode-theme .hljs-selector-pseudo),
+:global(.vscode-theme .hljs-name) {
+    color: var(--vscode-variable) !important;
+}
+
+/* Types */
+:global(.vscode-theme .hljs-type),
+:global(.vscode-theme .hljs-class .hljs-title),
+:global(.vscode-theme .hljs-selector-class),
+:global(.vscode-theme .hljs-selector-id) {
+    color: var(--vscode-type) !important;
+}
+
+/* Comments */
+:global(.vscode-theme .hljs-comment),
+:global(.vscode-theme .hljs-quote) {
+    color: var(--vscode-comment) !important;
+    font-style: italic;
+}
+
+/* Numbers */
+:global(.vscode-theme .hljs-number),
+:global(.vscode-theme .hljs-literal),
+:global(.vscode-theme .hljs-meta .hljs-number) {
+    color: var(--vscode-number) !important;
+}
+
+/* Meta and decorators */
+:global(.vscode-theme .hljs-meta),
+:global(.vscode-theme .hljs-meta-keyword),
+:global(.vscode-theme .hljs-decorator) {
+    color: var(--vscode-decorator) !important;
+}
+
+/* Operators */
+:global(.vscode-theme .hljs-operator),
+:global(.vscode-theme .hljs-punctuation),
+:global(.vscode-theme .hljs-symbol),
+:global(.vscode-theme .hljs-bullet) {
+    color: var(--vscode-operator) !important;
+}

@@ -1,0 +1,56 @@
+:global(.markdown-list) {
+  margin: var(--spacing-md) 0;
+  padding-left: var(--spacing-xl);
+  list-style-position: outside;
+  color: var(--text-secondary);
+}
+
+:global(.markdown-list.ordered) {
+  list-style-type: decimal;
+}
+
+:global(.markdown-list:not(.ordered)) {
+  list-style-type: disc;
+}
+
+/* Nested Lists */
+:global(.markdown-list .markdown-list) {
+  margin-top: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+  padding-left: var(--spacing-lg);
+}
+
+/* Nested bullet styles */
+:global(.markdown-list:not(.ordered) .markdown-list:not(.ordered)) {
+  list-style-type: circle;
+}
+
+:global(.markdown-list:not(.ordered) .markdown-list:not(.ordered) .markdown-list:not(.ordered)) {
+  list-style-type: square;
+}
+
+/* Nested numbering styles */
+:global(.markdown-list.ordered .markdown-list.ordered) {
+  list-style-type: lower-alpha;
+}
+
+:global(.markdown-list.ordered .markdown-list.ordered .markdown-list.ordered) {
+  list-style-type: lower-roman;
+}
+
+/* List Items */
+:global(.markdown-list-item) {
+  margin: var(--spacing-xs) 0;
+  line-height: var(--line-height-normal);
+  word-wrap: break-word;
+}
+
+:global(.markdown-list .markdown-list .markdown-list-item) {
+  margin: calc(var(--spacing-xs) * 0.5) 0;
+}
+
+/* List item continuations */
+:global(.markdown-list-item br + *) {
+  display: inline-block;
+  margin-top: var(--spacing-xs);
+}

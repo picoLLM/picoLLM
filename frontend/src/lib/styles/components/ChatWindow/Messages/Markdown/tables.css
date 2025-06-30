@@ -1,0 +1,183 @@
+:global(.markdown-table-wrapper) {
+  position: relative;
+  width: 100%;
+  margin: var(--spacing-lg) 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  contain: layout style;
+}
+
+:global(.markdown-list-item .markdown-table-wrapper) {
+  margin: var(--spacing-sm) 0;
+}
+
+:global(.markdown-table-container) {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  contain: content;
+  display: grid;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+:global(.markdown-table) {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+  line-height: var(--line-height-normal);
+  background: var(--bg-subtle);
+  table-layout: auto;
+}
+
+:global(.markdown-table thead) {
+  background: var(--bg-elevated);
+  border-bottom: 2px solid var(--border-color);
+}
+
+:global(.markdown-table th) {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+:global(.markdown-table td) {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+:global(.markdown-table tbody tr:last-child td) {
+  border-bottom: none;
+}
+
+:global(.markdown-table tbody tr:hover) {
+  background: var(--bg-hover);
+}
+
+:global(.markdown-table .text-left) { text-align: left; }
+:global(.markdown-table .text-center) { text-align: center; }
+:global(.markdown-table .text-right) { text-align: right; }
+
+/* Copy button positioned bottom right */
+:global(.markdown-table-copy) {
+  position: absolute;
+  bottom: -32px;
+  right: 0;
+  padding: 4px 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 0.875em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  z-index: 10;
+}
+
+:global(.markdown-table-wrapper:hover .markdown-table-copy) {
+  opacity: 1;
+}
+
+:global(.markdown-table-copy:hover) {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  border-color: var(--text-tertiary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+:global(.markdown-table-copy:active) {
+  transform: scale(0.98);
+}
+
+:global(.markdown-table-copy.copied) {
+  background: var(--success-bg, #10b981);
+  color: white;
+  border-color: var(--success-bg, #10b981);
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+:global(.markdown-table-container::-webkit-scrollbar) {
+  width: 6px;
+  height: 6px;
+}
+
+:global(.markdown-table-container::-webkit-scrollbar-track) {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+:global(.markdown-table-container::-webkit-scrollbar-thumb) {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+:global(.markdown-table-container::-webkit-scrollbar-thumb:hover) {
+  background: var(--text-tertiary);
+}
+
+/* Firefox */
+:global(.markdown-table-container) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) rgba(0, 0, 0, 0.05);
+}
+
+/* Firefox on hover - requires container hover */
+:global(.markdown-table-container:hover) {
+  scrollbar-color: var(--text-tertiary) rgba(0, 0, 0, 0.05);
+}
+
+/* Ensure smooth scrolling */
+:global(.markdown-table-container) {
+  scroll-behavior: smooth;
+  overflow: auto;
+}
+
+/* Optional: Hide scrollbar until hover (modern UX pattern) */
+@media (hover: hover) {
+  :global(.markdown-table-container) {
+    scrollbar-color: transparent transparent;
+  }
+  
+  :global(.markdown-table-container:hover) {
+    scrollbar-color: var(--border-color) rgba(0, 0, 0, 0.05);
+  }
+  
+  :global(.markdown-table-container::-webkit-scrollbar-thumb) {
+    background: transparent;
+  }
+  
+  :global(.markdown-table-container:hover::-webkit-scrollbar-thumb) {
+    background: var(--border-color);
+  }
+  
+  :global(.markdown-table-container:hover::-webkit-scrollbar-thumb:hover) {
+    background: var(--text-tertiary);
+  }
+}
+
+/* Streaming states */
+:global(.markdown-table-wrapper[data-streaming="true"]) {
+  position: relative;
+}
+
+:global(.markdown-table-wrapper[data-streaming="true"]::after) {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--link-color);
+  opacity: 0.5;
+  pointer-events: none;
+}

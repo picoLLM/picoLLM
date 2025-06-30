@@ -1,0 +1,21 @@
+.math-block {
+  margin: var(--spacing-md) 0;
+  text-align: center;
+  overflow-x: auto;
+  color: var(--text-primary);
+}
+
+.math-inline {
+  display: inline-block;
+  vertical-align: middle;
+  color: var(--text-primary);
+}
+
+.math-error {
+  color: #dc2626;
+  font-family: monospace;
+  font-size: 0.875em;
+  background: #fee;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 4px;
+}

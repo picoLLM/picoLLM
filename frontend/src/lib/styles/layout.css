@@ -1,0 +1,52 @@
+.chat-layout {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.main-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #121212;
+    position: relative;
+    min-width: 0;
+}
+
+.chat-and-settings-container {
+    flex-grow: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    min-width: 0;
+}
+
+/* Increase padding on the messages-wrapper inside ChatWindow 
+so messages never hide behind the input bar.
+We'll rely on chat-window's internal styles. */
+
+.message-input-wrapper {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 10;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.message-input-wrapper.settings-open {
+    right: 260px;
+}
+@media (min-width: 1024px) {
+    .message-input-wrapper.settings-open {
+        right: 300px;
+    }
+}
+
+/* For extra-large viewports, if needed */
+@media (min-width: 1440px) {
+    .message-input-wrapper.settings-open {
+        right: 310px; /* You can adjust this value further for larger screens if needed */
+    }
+}

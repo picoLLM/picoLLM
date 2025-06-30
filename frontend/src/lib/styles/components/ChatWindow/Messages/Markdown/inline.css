@@ -1,0 +1,104 @@
+/* Headings */
+:global(.markdown-h1),
+:global(.markdown-h2),
+:global(.markdown-h3),
+:global(.markdown-h4),
+:global(.markdown-h5),
+:global(.markdown-h6) {
+  font-weight: 600;
+  line-height: var(--line-height-tight);
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+}
+
+:global(.markdown-h1) { font-size: 2em; }
+:global(.markdown-h2) { font-size: 1.5em; }
+:global(.markdown-h3) { font-size: 1.25em; }
+:global(.markdown-h4),
+:global(.markdown-h5),
+:global(.markdown-h6) { font-size: 1em; }
+
+/* Paragraphs */
+:global(.markdown-paragraph) {
+  margin: var(--spacing-md) 0;
+  line-height: var(--line-height-relaxed);
+  overflow-wrap: break-word;
+  color: var(--text-secondary);
+}
+
+
+:global(.code-block-wrapper) {
+  margin: var(--spacing-lg) 0;
+  border-radius: 6px;
+}
+
+:global(.markdown-list-item .code-block-wrapper) {
+  margin: var(--spacing-sm) 0;
+}
+
+/* Inline Code */
+:global(code.inline-code) {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 4px;
+  font-size: 0.9em;
+  margin: 0 var(--spacing-xs);
+  background: var(--code-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+:global(.markdown-list-item code.inline-code),
+:global(.markdown-table code.inline-code) {
+  font-size: 0.85em;
+  padding: var(--spacing-xs) calc(var(--spacing-xs) * 1.5);
+}
+
+:global(.markdown-link) {
+  color: var(--link-color);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+  word-break: break-word;
+}
+
+:global(.markdown-link:hover) {
+  border-bottom-color: var(--link-color);
+}
+
+/* ===== Emphasis ===== */
+:global(.markdown-content strong) {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+:global(.markdown-content em) {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+/* ===== Blockquotes ===== */
+:global(.markdown-blockquote) {
+  margin: var(--spacing-md) 0;
+  padding-left: var(--spacing-lg);
+  border-left: 4px solid var(--border-color);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ===== Horizontal Rule ===== */
+:global(.markdown-hr-container) {
+  margin: var(--spacing-xl) 0;
+  padding: 0 var(--spacing-lg);
+}
+
+:global(.markdown-hr) {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--border-color) 20%, 
+    var(--border-color) 80%, 
+    transparent 100%
+  );
+}

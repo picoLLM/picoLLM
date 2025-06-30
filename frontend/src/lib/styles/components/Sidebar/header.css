@@ -1,0 +1,103 @@
+	.sidebar-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 1rem;
+		min-height: 32px;
+		gap: 0.5rem;
+		flex-shrink: 0;
+	}
+
+	.logo {
+		font-size: 1.25rem;
+		font-weight: 500;
+		color: #ffffff;
+		font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif;
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+		letter-spacing: -0.015em;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		flex: 1 1 auto;
+	}
+
+	.header-controls {
+		display: flex;
+		gap: 0.25rem;
+		align-items: center;
+		flex-shrink: 0;
+	}
+
+	.toggle-sidebar,
+	.new-chat-btn {
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 0.375rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 4px;
+		transition: background-color 0.2s ease;
+		flex-shrink: 0;
+		width: 28px;
+		height: 28px;
+	}
+
+	.toggle-sidebar:hover,
+	.new-chat-btn:hover {
+		background-color: rgba(255, 255, 255, 0.1);
+	}
+
+	.toggle-sidebar {
+		color: #ffffff;
+	}
+
+	.new-chat-btn {
+		color: #007aff;
+	}
+
+	.new-chat-btn:hover {
+		color: #0056b3;
+	}
+
+	/* Collapsed state */
+	:global(.sidebar.collapsed) .logo {
+		width: 0;
+		opacity: 0;
+		overflow: hidden;
+	}
+
+	:global(.sidebar.collapsed) .sidebar-header {
+		justify-content: center;
+	}
+
+	:global(.sidebar.collapsed) .new-chat-btn {
+		display: none;
+	}
+
+	/* Icon sizes */
+	:global(svg) {
+		width: 16px;
+		height: 16px;
+	}
+
+	.new-chat-btn :global(svg) {
+		width: 20px;
+		height: 20px;
+	}
+
+	/* Responsive */
+	@media (max-width: 1024px) {
+		.logo {
+			font-size: 1.125rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.logo {
+			font-size: 1.125rem;
+		}
+	}

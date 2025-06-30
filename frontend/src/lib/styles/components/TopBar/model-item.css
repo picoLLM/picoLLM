@@ -1,0 +1,167 @@
+/* Base model item */
+.model-item {
+  list-style: none;
+  margin: 2px 0;
+  border-radius: 8px;
+}
+
+.model-item:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* Model button - combines all interactive states */
+.model-button {
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* Active state only - no hover */
+.model-button.active {
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+.model-button:focus {
+  outline: none;
+}
+
+.model-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.2);
+  outline-offset: -2px;
+}
+
+/* Selected state */
+.model-item.selected .model-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Model info section */
+.model-info {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1;
+}
+
+.model-name {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.model-params {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12.5px;
+  font-weight: 400;
+}
+
+/* Model metadata section */
+.model-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.model-meta-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12.5px;
+}
+
+.model-owner {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+.model-date,
+.model-length {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.model-size {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12.5px;
+  padding-right: 4px;
+}
+
+/* Actions menu */
+.model-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 4px;
+}
+
+.model-menu-button {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 1px;
+  height: 20px;
+  width: 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.model-menu-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.2);
+  outline-offset: -2px;
+}
+
+/* Dropdown menu */
+.model-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 2px);
+  background-color: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  width: 100px;
+  overflow: hidden;
+}
+
+.model-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.model-menu-item:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.2);
+  outline-offset: -2px;
+}
+
+.delete-button {
+  color: #ff6b6b;
+}

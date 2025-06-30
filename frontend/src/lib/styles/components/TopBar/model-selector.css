@@ -1,0 +1,259 @@
+/* Base container */
+.search-container {
+	position: relative;
+	width: 100%;
+	max-width: 500px;
+	font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Input wrapper */
+.input-wrapper {
+	display: flex;
+	background-color: #2a2a2a;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 20px;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-wrapper:hover {
+	border-color: rgba(255, 255, 255, 0.2);
+}
+
+.input-wrapper:focus-within {
+	border-color: rgba(255, 255, 255, 0.3);
+	box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Progress wrapper */
+.progress-wrapper {
+	position: relative;
+	width: 100%;
+	height: 0;
+}
+
+/* Layout sections */
+.model-selection {
+	flex-grow: 1;
+	display: flex;
+	align-items: center;
+	padding: 0 10px;
+}
+
+.provider-selection {
+	border-left: 1px solid rgba(255, 255, 255, 0.1);
+	min-width: 120px;
+}
+
+.icon-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	color: #a0a0a0;
+}
+
+/* Input */
+.search-input {
+	flex-grow: 1;
+	min-height: 36px;
+	padding: 8px;
+	background-color: transparent;
+	color: #fff;
+	font-size: 14px;
+	border: none;
+	outline: none;
+	width: 100%;
+}
+
+.search-input::placeholder {
+	color: #a0a0a0;
+	opacity: 0.8;
+}
+
+/* Dropdown buttons */
+.dropdown-toggle {
+	background-color: transparent;
+	color: #fff;
+	border: none;
+	padding: 8px 12px;
+	font-size: 14px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	transition: background-color 0.2s ease;
+	border-radius: 6px;
+}
+
+.dropdown-toggle:hover,
+.dropdown-toggle:focus {
+	background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-toggle:focus-visible {
+	outline: 2px solid rgba(255, 255, 255, 0.2);
+	outline-offset: -2px;
+}
+
+.provider-toggle {
+	width: 100%;
+	justify-content: space-between;
+	padding: 8px 12px;
+}
+
+.provider-icon {
+	width: 16px;
+	height: 16px;
+	margin-right: 8px;
+	border-radius: 2px;
+}
+
+.provider-label {
+	flex-grow: 1;
+	text-align: left;
+}
+
+/* Dropdown menus */
+.dropdown-menu {
+	position: absolute;
+	top: calc(100% + 8px);
+	background-color: rgba(42, 42, 42, 0.95);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 12px;
+	max-height: 300px;
+	overflow-y: auto;
+	z-index: 10;
+	list-style: none;
+	padding: 6px;
+	margin: 0;
+	box-shadow:
+		0 4px 6px -1px rgba(0, 0, 0, 0.1),
+		0 2px 4px -1px rgba(0, 0, 0, 0.06),
+		0 20px 25px -5px rgba(0, 0, 0, 0.2);
+	backdrop-filter: blur(10px);
+	transform-origin: top;
+	animation: dropdownAppear 0.2s ease;
+}
+
+.model-menu {
+	left: 0;
+	right: 120px;
+	width: auto;
+}
+
+.provider-menu {
+	right: 0;
+	width: 120px;
+}
+
+/* Provider menu items */
+.provider-menu li {
+	padding: 2px;
+	margin: 2px 0;
+	border-radius: 8px;
+	transition: background-color 0.15s ease;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.provider-menu li:hover,
+.provider-menu li:focus,
+.provider-menu li.active {
+	background-color: rgba(255, 255, 255, 0.05);
+	outline: none;
+}
+
+/* Download button - special case in model list */
+.model-item.downloadable {
+	border-bottom: none;
+}
+
+.download-button {
+	width: 100%;
+	text-align: left;
+	padding: 10px 12px;
+	background: none;
+	border: none;
+	color: #fff;
+	font-size: 14px;
+	cursor: pointer;
+	border-radius: 8px;
+	transition: all 0.15s ease;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+.download-button:hover,
+.download-button:focus-within,
+.download-button.active {
+	background-color: rgba(255, 255, 255, 0.07);
+	transform: translateX(2px);
+}
+
+.download-button:focus {
+	outline: none;
+}
+
+.download-button:focus-visible {
+	outline: 2px solid rgba(255, 255, 255, 0.2);
+	outline-offset: -2px;
+}
+
+.download-button .model-info {
+	display: flex;
+	align-items: center;
+	min-width: 0;
+	flex: 1;
+}
+
+.download-button .model-name {
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.download-button .model-meta {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-shrink: 0;
+	color: rgba(255, 255, 255, 0.5);
+}
+
+/* Scrollbar */
+.dropdown-menu::-webkit-scrollbar {
+	width: 4px;
+	height: 4px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+	background: transparent;
+	margin: 4px 0;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.15);
+	border-radius: 100vh;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+/* Animations */
+@keyframes dropdownAppear {
+	from {
+		opacity: 0;
+		transform: translateY(-8px) scale(0.98);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+

@@ -1,0 +1,286 @@
+/* Core Layout Variables */
+:root {
+    --chat-max-width: min(900px, 100vw);
+    --chat-padding: clamp(1rem, 3vw, 2rem);
+}
+
+.chat-container {
+    display: flex;
+    height: 100%;
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.chat-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    width: 100%;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: layout size style;
+    scroll-behavior: auto;
+    background: linear-gradient(to right, 
+        transparent 0%, 
+        transparent calc((100% - var(--chat-max-width)) / 2 - 100px),
+        rgba(0, 0, 0, 0.02) calc((100% - var(--chat-max-width)) / 2),
+        rgba(0, 0, 0, 0.02) calc((100% + var(--chat-max-width)) / 2),
+        transparent calc((100% + var(--chat-max-width)) / 2 + 100px),
+        transparent 100%
+    );
+}
+    
+.messages-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--chat-max-width);
+    margin: 0 auto;
+    padding: 1rem var(--chat-padding);
+    padding-bottom: 80px;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: layout style;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.message-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0; 
+    width: 100%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: layout style;
+    position: relative;
+}
+
+.message-item {
+    width: 100%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: layout style paint;
+    position: relative;
+}
+
+
+.loading-messages,
+.empty-chat,
+.no-chat-selected {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    max-width: var(--chat-max-width);
+    margin: 0 auto;
+    color: #888;
+    text-align: center;
+    padding: 0 var(--chat-padding);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    box-sizing: border-box;
+}
+
+.loading-messages p {
+    max-width: 600px;
+    margin: 1rem auto 0;
+}
+
+/* Prevent layout shifts during transition */
+.transitioning .message-item {
+    transform: translateZ(0);
+    contain: layout style paint;
+}
+
+/* Settings panel adjustments */
+.chat-container.settings-open .chat-window {
+    width: calc(100% - 300px);
+}
+
+/* Optimize transition performance - only add will-change during transition */
+.chat-container.transitioning .chat-window {
+    contain: layout style paint;
+    will-change: width, transform; /* Only during transition */
+}
+
+.chat-container.transitioning .messages-wrapper {
+    contain: layout style;
+    will-change: transform; /* Only during transition */
+}
+
+/* Scroll button positioning */
+.scroll-down-button {
+    position: fixed;
+    bottom: 110px;
+    right: 15px;
+    background-color: rgba(68, 68, 68, 0.8);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.85;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: layout style;
+    z-index: 10;
+}
+
+/* Calculate right position based on centered content */
+@media (min-width: 1200px) {
+    .scroll-down-button {
+        right: max(20px, calc((100vw - var(--chat-max-width)) / 2 - 10px));
+    }
+}
+
+.chat-container.settings-open .scroll-down-button {
+    right: 320px;
+}
+
+@media (min-width: 1200px) {
+    .chat-container.settings-open .scroll-down-button {
+        right: max(320px, calc((100vw - 300px - var(--chat-max-width)) / 2 + 8px));
+    }
+}
+
+/* Only add will-change during actual transition */
+.scroll-down-button.transitioning {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    contain: layout style;
+    will-change: right, transform; /* Only during transition */
+}
+
+.scroll-down-button:hover {
+    background-color: rgba(68, 68, 68, 1);
+    opacity: 1;
+    transform: translateY(-2px) translateZ(0);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    will-change: transform; /* Only on hover when animation is likely */
+}
+
+.scroll-down-button:active {
+    transform: translateY(0) translateZ(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.chat-window::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.chat-window::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 5px;
+}
+
+.chat-window::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background 0.2s ease;
+}
+
+.chat-window::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+  background-clip: padding-box;
+}
+
+/* Firefox */
+.chat-window {
+  scrollbar-width: auto;
+  scrollbar-color: rgba(255, 255, 255, 0.1) rgba(255, 255, 255, 0.02);
+}
+
+/* Firefox on hover */
+.chat-window:hover {
+  scrollbar-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.02);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1400px) {
+    :root {
+        --chat-max-width: min(850px, 100vw);
+    }
+}
+
+@media (max-width: 1200px) {
+    :root {
+        --chat-max-width: 100%;
+    }
+    
+    .chat-window {
+        background: none;
+    }
+    
+    .scroll-down-button {
+        right: 20px !important;
+    }
+    
+    .chat-container.settings-open .scroll-down-button {
+        right: 320px !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    :root {
+        --chat-max-width: 100%;
+        --chat-padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --chat-max-width: 100%;
+        --chat-padding: 1rem;
+    }
+    
+    .messages-wrapper {
+        padding: 0.75rem;
+        padding-bottom: 80px;
+    }
+    
+    .scroll-down-button {
+        right: 12px !important;
+        bottom: 90px;
+    }
+    
+    .chat-container.settings-open .scroll-down-button {
+        right: 12px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --chat-padding: 0.75rem;
+    }
+}
+
+/* Ultra-wide screens - use more space while maintaining readability */
+@media (min-width: 1800px) {
+    :root {
+        --chat-max-width: min(1200px, 90vw);
+    }
+}
+
+@media (min-width: 2400px) {
+    :root {
+        --chat-max-width: min(1400px, 85vw);
+    }
+}

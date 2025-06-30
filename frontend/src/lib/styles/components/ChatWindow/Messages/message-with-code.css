@@ -1,0 +1,165 @@
+/* Code Highlighting */
+:global(.code-block-wrapper) {
+    margin: 0.6em 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.2);
+    width: 100% !important;
+    box-sizing: border-box;
+    contain: style layout;
+}
+
+:global(.message-content .code-highlighter) {
+    width: 100% !important;
+    margin: 0;
+    contain: style layout;
+    display: grid;
+}
+
+/* Markdown Content */
+:global(.message-content > *) {
+    width: 100%;
+    box-sizing: border-box;
+    contain: style;
+}
+
+:global(.message-content p + p) {
+    margin-top: 0.5em;
+}
+
+/* Consistent spacing for paragraphs before and after code blocks */
+:global(.message-content p + .code-block-wrapper) {
+    margin-top: 0.6em;
+}
+
+:global(.message-content .code-block-wrapper + p) {
+    margin-top: 0.6em;
+}
+
+:global(.message-content pre) {
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    overflow: visible;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Inline code - Higher specificity to override defaults */
+:global(.message-content code:not(.hljs)) {
+    color: #89ddff;
+    background: rgba(137, 221, 255, 0.08);
+    padding: 0 0.3em;
+    border-radius: 3px;
+    font-family: var(--code-font, 'Fira Code', monospace);
+    font-size: 0.9em;
+    display: inline;
+    line-height: inherit;
+    vertical-align: baseline;
+    box-sizing: border-box;
+}
+
+/* Message with Code Detection */
+:global(.message-content:has(.code-block-wrapper)) {
+    width: max(fit-content, min(var(--message-max-width), 100%));
+}
+
+/* Streaming State */
+.message-container.is-streaming .message {
+    min-width: min(300px, var(--message-max-width));
+}
+
+/* Links */
+:global(.message-content a) {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+:global(.message-content a:hover) {
+    opacity: 0.8;
+}
+
+/* Lists */
+:global(.message-content ul, .message-content ol) {
+    margin: 0.6em 0;
+    padding-left: 1em;
+}
+
+/* Consistent spacing for paragraphs before and after lists */
+:global(.message-content p + ul),
+:global(.message-content p + ol) {
+    margin-top: 0.6em;
+}
+
+:global(.message-content ul + p),
+:global(.message-content ol + p) {
+    margin-top: 0.6em;
+}
+
+:global(.message-content li) {
+    margin-bottom: 0.2em;
+}
+
+:global(.message-content li:last-child) {
+    margin-bottom: 0;
+}
+
+/* Typography */
+:global(.message-content blockquote) {
+    border-left: 3px solid rgba(255, 255, 255, 0.3);
+    margin: 0.5em 0;
+    padding-left: 0.8em;
+    font-style: italic;
+}
+
+:global(
+    .message-content h1,
+    .message-content h2,
+    .message-content h3,
+    .message-content h4,
+    .message-content h5,
+    .message-content h6
+) {
+    margin: 0.6em 0 0.3em;
+    line-height: 1.3;
+}
+
+/* Tool Status */
+:global(.tool-status) {
+    background-color: rgba(30, 30, 30, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+}
+
+:global(.tool-status .tool-header) {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+:global(.tool-status .tool-header span) {
+    font-weight: 500;
+    font-size: 0.9rem;
+    flex: 1;
+}
+
+:global(.tool-status pre) {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    padding: 0.75rem !important;
+    border-radius: 6px !important;
+    font-family: 'Fira Code', monospace !important;
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+:global(.tool-status pre.result) {
+    border-color: rgba(0, 122, 255, 0.2) !important;
+}

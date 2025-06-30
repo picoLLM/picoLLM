@@ -1,0 +1,9 @@
+.env
+!.env.example
+!.env.test
+
+.deepeval
+.deepeval-cache.json
+
+/archive
+

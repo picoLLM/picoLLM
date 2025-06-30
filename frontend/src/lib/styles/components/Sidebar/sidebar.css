@@ -1,0 +1,106 @@
+.sidebar {
+  width: clamp(220px, 16vw, 260px);
+  height: 100vh;
+  overflow-y: auto;
+  background-color: #1e1e1e;
+  padding: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease, padding 0.3s ease;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.sidebar.collapsed {
+  width: 60px;
+  padding: 0.75rem 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: clamp(200px, 20vw, 240px);
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    width: 240px;
+  }
+  
+  .sidebar.collapsed {
+    width: 60px;
+  }
+  
+  .sidebar:not(.collapsed)::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 100%;
+    right: -100vw;
+    bottom: 0;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 220px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .sidebar {
+    width: clamp(220px, 12vw, 260px);
+  }
+}
+
+@media (min-width: 2560px) {
+  .sidebar {
+    width: clamp(220px, 10vw, 260px);
+  }
+}
+
+/* Scrollbar */
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2.5px;
+  transition: background 0.2s ease;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Firefox */
+.sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+}
+
+/* Firefox on hover */
+.sidebar:hover {
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.05);
+}
+
+/* Ensure smooth scrolling */
+.sidebar {
+  scroll-behavior: smooth;
+}
