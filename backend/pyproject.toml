@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "Python client for Anthropic and OpenAI (compatible) LLM engines"
 readme = "README.md"
 requires-python = ">=3.12"
-license = "MIT"
+license = "CC0-1.0"
 authors = [
  {name = "Tim Dolan", email = "timmydolan21@gmail.com"}
 ]
@@ -34,10 +34,10 @@ dependencies = [
     "sse_starlette==2.2.1",
     "ollama==0.4.7",
     "openai",
-    "sentence-transformers[onnx]==3.4.1",
     "beautifulsoup4",
     "anthropic>=0.52.1",
     "readability-lxml==0.8.4.1",
+    "sentence-transformers[onnx]==5.0.0",
 ]
 
 [project.optional-dependencies]
