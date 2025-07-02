@@ -1,3 +1,3 @@
-from .models import ModelManager, EmbeddingModels
+from .models import  EmbeddingModels
 
-__all__ = ['ModelManager', 'EmbeddingModels']
+__all__ = ['EmbeddingModels']
