@@ -1,253 +1,235 @@
 import os
 import logging
-from typing import Optional, Dict, Any, Tuple
-from dataclasses import dataclass
 from functools import lru_cache
-
+from typing import Optional, Dict, List, Union, Any, Tuple
 import torch
-from transformers import AutoTokenizer, AutoModelForMaskedLM
-from sentence_transformers import SentenceTransformer
+import numpy as np
+from sentence_transformers import SentenceTransformer, SparseEncoder
 
-# Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# Suppress common warnings
 import warnings
 warnings.filterwarnings("ignore", message="`clean_up_tokenization_spaces` was not set.*")
 
-@dataclass
-class EmbeddingModels:
-    """Container for model components"""
-    dense_model: Optional[SentenceTransformer] = None
-    query_tokenizer: Optional[AutoTokenizer] = None
-    query_model: Optional[AutoModelForMaskedLM] = None
-    doc_tokenizer: Optional[AutoTokenizer] = None
-    doc_model: Optional[AutoModelForMaskedLM] = None
-    rerank_model: Optional[Any] = None
-    device: Optional[torch.device] = None
 
-class ModelManager:
-    """Efficient model manager with lazy loading and memory optimization"""
+class EmbeddingModels:
+    """Singleton manager for embedding models with lazy loading"""
     _instance = None
     
-    def __init__(self):
-        self.embeddings = EmbeddingModels()
-        self._model_configs = {}
-        self._is_initialized = False
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.embeddings.device = self.device
-        self._log_system_info()
-    
-    @classmethod
-    def get_instance(cls):
+    def __new__(cls):
         if cls._instance is None:
-            cls._instance = cls()
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
         return cls._instance
     
+    def __init__(self):
+        if not self._initialized:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            self.dense = None
+            self.query_sparse = None
+            self.doc_sparse = None
+            self._configs = {}
+            self._initialized = True
+            self._log_system_info()
+    
     def _log_system_info(self):
-        """Log system information including GPU details"""
-        cuda = torch.cuda.is_available()
-        logger.info(f"CUDA available: {cuda}")
-        
-        if cuda:
+        """Log GPU details if available"""
+        if torch.cuda.is_available():
             n = torch.cuda.device_count()
-            names = [torch.cuda.get_device_name(i) for i in range(n)]
-            logger.info(f"Found {n} CUDA device(s): {names}")
-            
             for i in range(n):
-                free, total = self._get_gpu_memory(i)
-                logger.info(f"GPU {i} - {names[i]}: {free/1024:.2f}GB free of {total/1024:.2f}GB total")
-        
+                name = torch.cuda.get_device_name(i)
+                props = torch.cuda.get_device_properties(i)
+                free = props.total_memory - torch.cuda.memory_allocated(i)
+                logger.info(f"GPU {i} - {name}: {free/1024**3:.2f}GB free of {props.total_memory/1024**3:.2f}GB")
         logger.info(f"Using device: {self.device}")
     
-    @staticmethod
-    def _get_gpu_memory(device_id=0) -> Tuple[float, float]:
-        """Get free and total memory for a GPU"""
-        try:
-            props = torch.cuda.get_device_properties(device_id)
-            free = props.total_memory - torch.cuda.memory_allocated(device_id)
-            return free, props.total_memory
-        except Exception as e:
-            logger.warning(f"Failed to get GPU memory stats: {e}")
-            return 0, 0
-    
-    def configure_models(self, **model_names):
-        """Configure models from arguments or environment variables"""
-        types = ['query_model_name', 'doc_model_name', 'dense_model_name', 'rerank_model_name']
+    def configure(self, **kwargs):
+        """Configure models from kwargs or environment"""
+        model_types = ['query', 'doc', 'dense']
+        for t in model_types:
+            key = f"{t}_model_name"
+            self._configs[t] = kwargs.get(key) or os.environ.get(key.upper())
         
-        for t in types:
-            self._model_configs[t] = model_names.get(t) or os.environ.get(t.upper())
-        
-        configured = [f"{k.split('_')[0].title()}: {v}" for k, v in self._model_configs.items() if v]
+        configured = [f"{k}: {v}" for k, v in self._configs.items() if v]
         if configured:
-            logger.info(f"Models configured: {', '.join(configured)}")
-        else:
-            logger.warning("No models configured from arguments or environment")
+            logger.info(f"Configured: {', '.join(configured)}")
     
     @staticmethod
     @lru_cache(maxsize=4)
-    def _load_tokenizer(model_name: str) -> AutoTokenizer:
-        logger.info(f"Loading tokenizer: {model_name}")
-        return AutoTokenizer.from_pretrained(model_name)
-    
-    @staticmethod
-    @lru_cache(maxsize=4)
-    def _load_masked_lm(model_name: str) -> AutoModelForMaskedLM:
-        logger.info(f"Loading masked LM: {model_name}")
-        return AutoModelForMaskedLM.from_pretrained(model_name)
+    def _load_sparse(model_name: str) -> SparseEncoder:
+        """Load sparse encoder with optional ONNX backend"""
+        backend = os.environ.get('SENTENCE_TRANSFORMER_BACKEND')
+        if backend == 'onnx':
+            try:
+                onnx_path = os.environ.get('SENTENCE_TRANSFORMER_ONNX_PATH', 'onnx/model.onnx')
+                logger.info(f"Loading sparse {model_name} with ONNX")
+                return SparseEncoder(model_name, backend="onnx", model_kwargs={"file_name": onnx_path})
+            except Exception as e:
+                logger.warning(f"ONNX failed for {model_name}: {e}, using default")
+        
+        logger.info(f"Loading sparse {model_name}")
+        return SparseEncoder(model_name)
     
     @staticmethod
     @lru_cache(maxsize=2)
-    def _load_sentence_transformer(model_name: str, device_str: str) -> SentenceTransformer:
+    def _load_dense(model_name: str, device: str) -> SentenceTransformer:
         """Load sentence transformer with optional ONNX backend"""
         backend = os.environ.get('SENTENCE_TRANSFORMER_BACKEND')
+        kwargs = {"device": device}
         
         if backend == 'onnx':
             onnx_path = os.environ.get('SENTENCE_TRANSFORMER_ONNX_PATH', 'onnx/model.onnx')
-            logger.info(f"Loading sentence transformer: {model_name} with ONNX backend (path: {onnx_path})")
-            return SentenceTransformer(
-                model_name,
-                backend="onnx",
-                model_kwargs={"file_name": onnx_path},
-                device=device_str
-            )
+            logger.info(f"Loading dense {model_name} with ONNX")
+            kwargs.update({"backend": "onnx", "model_kwargs": {"file_name": onnx_path}})
         else:
-            logger.info(f"Loading sentence transformer: {model_name}")
-            return SentenceTransformer(model_name, device=device_str)
+            logger.info(f"Loading dense {model_name}")
+        
+        return SentenceTransformer(model_name, **kwargs)
     
-    def _check_gpu_memory(self, model_name: str, required_mb: int = 2000) -> bool:
-        """Check if there's sufficient GPU memory for a model"""
+    def _check_gpu_memory(self, required_mb: int = 2000) -> bool:
+        """Check if sufficient GPU memory available"""
         if not torch.cuda.is_available():
             return False
         
-        required = required_mb * 1024 * 1024
-        free_mems = [self._get_gpu_memory(i)[0] for i in range(torch.cuda.device_count())]
-        max_free = max(free_mems) if free_mems else 0
-        
-        if max_free < required:
-            logger.warning(f"Insufficient GPU memory for {model_name}. Required: {required_mb}MB, Available: {max_free/1024/1024:.2f}MB")
-            return False
-        
-        return True
+        props = torch.cuda.get_device_properties(0)
+        free = props.total_memory - torch.cuda.memory_allocated(0)
+        return free >= required_mb * 1024 * 1024
     
-    def _load_model(self, model_type: str, model_name: str):
-        """Load a specific model with GPU memory check"""
-        if not model_name:
-            return None
-        
-        use_gpu = self._check_gpu_memory(model_name)
-        device_str = "cuda" if use_gpu else "cpu"
-        
-        if model_type == 'query':
-            self.embeddings.query_tokenizer = self._load_tokenizer(model_name)
-            self.embeddings.query_model = self._load_masked_lm(model_name)
-            if use_gpu:
-                self.embeddings.query_model = self.embeddings.query_model.to(self.device)
-        elif model_type == 'doc':
-            self.embeddings.doc_tokenizer = self._load_tokenizer(model_name)
-            self.embeddings.doc_model = self._load_masked_lm(model_name)
-            if use_gpu:
-                self.embeddings.doc_model = self.embeddings.doc_model.to(self.device)
-        elif model_type == 'dense':
-            self.embeddings.dense_model = self._load_sentence_transformer(model_name, device_str)
-            if use_gpu and device_str == "cuda":
-                self.embeddings.dense_model = self.embeddings.dense_model.to(self.device)
-        elif model_type == 'rerank':
-            logger.info(f"Reranker model configured but not loaded: {model_name}")
-            self.embeddings.rerank_model = None
-    
-    def initialize_models(self, **model_names):
+    def initialize(self, **kwargs):
         """Initialize models based on configuration"""
-        if self._is_initialized:
+        if any([self.dense, self.query_sparse, self.doc_sparse]):
             logger.info("Models already initialized")
             return
         
-        if model_names:
-            self.configure_models(**model_names)
+        if kwargs:
+            self.configure(**kwargs)
         
-        configs = {k.split('_')[0]: self._model_configs.get(k) for k in 
-                  ['query_model_name', 'doc_model_name', 'dense_model_name', 'rerank_model_name']}
+        if not any(self._configs.values()):
+            raise ValueError("No models configured")
         
-        if not any(configs[k] for k in ['query', 'doc', 'dense']):
-            raise ValueError("No models configured. Call configure_models or set environment variables.")
+        use_gpu = self._check_gpu_memory()
+        device_str = "cuda" if use_gpu else "cpu"
         
-        try:
-            for mtype, mname in configs.items():
-                if mname:
-                    self._load_model(mtype, mname)
-            
-            self._is_initialized = True
-            self._log_model_placement()
-            logger.info("Model initialization complete")
-        except Exception as e:
-            logger.error(f"Error initializing models: {e}")
-            self.cleanup()
-            raise
+        # Load configured models
+        if self._configs.get('query'):
+            self.query_sparse = self._load_sparse(self._configs['query'])
+            if use_gpu:
+                self.query_sparse.to(self.device)
+        
+        if self._configs.get('doc'):
+            self.doc_sparse = self._load_sparse(self._configs['doc'])
+            if use_gpu:
+                self.doc_sparse.to(self.device)
+        
+        if self._configs.get('dense'):
+            self.dense = self._load_dense(self._configs['dense'], device_str)
+            if use_gpu and device_str == "cuda":
+                self.dense = self.dense.to(self.device)
+        
+        self._log_model_status()
     
-    def _log_model_placement(self):
-        """Log summary of model placement"""
-        models = {
-            "Dense Model": self.embeddings.dense_model,
-            "Query Model": self.embeddings.query_model,
-            "Doc Model": self.embeddings.doc_model,
-            "Rerank Model": self.embeddings.rerank_model
-        }
-        
-        logger.info("=== Model Placement Summary ===")
+    def _log_model_status(self):
+        """Log model placement summary"""
+        models = {"Dense": self.dense, "Query Sparse": self.query_sparse, "Doc Sparse": self.doc_sparse}
+        logger.info("=== Model Status ===")
         for name, model in models.items():
             if model is None:
-                device_str = "Not loaded"
-            elif hasattr(model, "device"):
-                device_str = str(model.device)
+                logger.info(f"{name}: Not loaded")
             else:
-                try:
-                    device_str = next(model.parameters()).device
-                except (StopIteration, AttributeError):
-                    device_str = "Unknown"
-            
-            # Check if Dense Model is using ONNX backend
-            if name == "Dense Model" and model is not None:
-                backend = os.environ.get('SENTENCE_TRANSFORMER_BACKEND')
-                if backend == 'onnx':
-                    onnx_path = os.environ.get('SENTENCE_TRANSFORMER_ONNX_PATH', 'onnx/model.onnx')
-                    logger.info(f"{name}: {device_str} [ONNX Backend - {onnx_path}]")
-                else:
-                    logger.info(f"{name}: {device_str}")
-            else:
-                logger.info(f"{name}: {device_str}")
-        logger.info("==============================")
+                device = getattr(model, 'device', 'Unknown')
+                logger.info(f"{name}: {device}")
+        logger.info("==================")
     
-    def get_components(self) -> EmbeddingModels:
-        """Get all model components, initializing if necessary"""
-        if not self._is_initialized:
-            logger.info("Initializing models on first use")
-            self.initialize_models()
-        
-        if not any([self.embeddings.dense_model, self.embeddings.query_model, self.embeddings.doc_model]):
-            raise ValueError("No models were initialized successfully")
-        
-        return self.embeddings
+    def get_components(self):
+        """Get models, initializing if needed"""
+        if not any([self.dense, self.query_sparse, self.doc_sparse]):
+            self.initialize()
+        return self
     
     def cleanup(self):
-        """Release all model resources and memory"""
-        logger.info("Cleaning up resources")
+        """Release all resources"""
+        logger.info("Cleaning up models")
         
-        for attr in ['dense_model', 'query_model', 'doc_model', 'rerank_model']:
-            if hasattr(self.embeddings, attr) and getattr(self.embeddings, attr) is not None:
-                delattr(self.embeddings, attr)
-                logger.info(f"{attr.replace('_', ' ').title()} freed")
+        for attr in ['dense', 'query_sparse', 'doc_sparse']:
+            if hasattr(self, attr):
+                setattr(self, attr, None)
         
-        self._load_tokenizer.cache_clear()
-        self._load_masked_lm.cache_clear()
-        self._load_sentence_transformer.cache_clear()
-        
-        self.embeddings = EmbeddingModels(device=self.device)
+        self._load_sparse.cache_clear()
+        self._load_dense.cache_clear()
         
         if torch.cuda.is_available():
-            before = torch.cuda.memory_allocated()
             torch.cuda.empty_cache()
-            after = torch.cuda.memory_allocated()
-            logger.info(f"CUDA cache emptied. Freed approximately {(before - after) / (1024 * 1024):.2f}MB")
         
-        self._is_initialized = False
+        logger.info("Cleanup complete")
+    
+    # Backward compatibility properties
+    @property
+    def dense_model(self):
+        return self.dense
+    
+    @property
+    def query_sparse_model(self):
+        return self.query_sparse
+    
+    @property
+    def doc_sparse_model(self):
+        return self.doc_sparse
+    
+def get_dense_embedding(
+    self, 
+    text: str,
+    use_matryoshka: bool = False,
+    matryoshka_levels: int = 3,
+    build_with_quantized: bool = False,
+    calibration_embeddings: Optional[np.ndarray] = None
+) -> Dict[str, Union[List[float], List[int]]]:
+    """Generate dense embeddings for the given text."""
+    if not self.dense:
+        self.initialize()
+        
+    dense_vector = self.dense.encode(
+        text, convert_to_tensor=True, show_progress_bar=False
+    ).cpu().numpy()
+    
+    if use_matryoshka:
+        matryoshka_vectors = {}
+        for i in range(matryoshka_levels):
+            size = dense_vector.shape[0] // (2 ** i)
+            matryoshka_vectors[f"matryoshka-{size}dim"] = dense_vector[:size].tolist()
+        return matryoshka_vectors
+    else:
+        result = {"dense": dense_vector.tolist()}
+        if build_with_quantized:
+            if calibration_embeddings is None:
+                raise ValueError("Calibration embeddings required for quantization")
+            uint8_vector = self.quantize_vector(dense_vector, calibration_embeddings)
+            result["dense-uint8"] = uint8_vector.tolist()
+        return result
+
+def get_sparse_embedding(self, text: str, is_query: bool = False) -> Any:
+    """Generate sparse embedding using appropriate SparseEncoder."""
+    if not self.query_sparse:
+        self.initialize()
+        
+    model = self.query_sparse if is_query else self.doc_sparse
+    embedding = model.encode([text])
+    indices, values = self._extract_sparse_indices_values(embedding, 0)
+    return list(zip(indices, values)) if indices else []
+
+def batch_encode_sparse(self, texts: List[str], is_query: bool) -> Tuple[List[List[int]], List[List[float]]]:
+    """Generate sparse vectors for batch processing."""
+    if not self.query_sparse:
+        self.initialize()
+        
+    model = self.query_sparse if is_query else self.doc_sparse
+    embeddings = model.encode(texts)
+    
+    indices_list = []
+    values_list = []
+    for i in range(len(texts)):
+        indices, values = self._extract_sparse_indices_values(embeddings, i)
+        indices_list.append(indices)
+        values_list.append(values)
+    
+    return indices_list, values_list
