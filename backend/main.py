@@ -39,6 +39,7 @@ async def lifespan(app: FastAPI):
             except Exception as e:
                 logger.error(f"Failed to connect to the database: {str(e)}")
                 raise
+        
         # load tools from database
         try:
             logger.info("Loading dynamic tools from database...")
@@ -55,18 +56,15 @@ async def lifespan(app: FastAPI):
         
         # configure embedding models
         logger.info("Configuring embedding models... They will load/unload as needed.")
-        model_manager = dependencies.get_model_manager()
-        model_manager.configure_models(
+        embedding_models = dependencies.get_embedding_models()
+        embedding_models.configure(
             query_model_name=dependencies.SPARSE_MODEL_QUERY,
             doc_model_name=dependencies.SPARSE_MODEL_DOCS,
-            dense_model_name=dependencies.DENSE_MODEL,
-            rerank_model_name=dependencies.RERANK_MODEL
+            dense_model_name=dependencies.DENSE_MODEL
         )
         
         qdrant_manager = QdrantDBManager(
-            model_manager=model_manager,
-            build_with_quantized=False,
-            use_matryoshka=False
+            embeddings=embedding_models
         )
         
         # Initialize Ollama client
@@ -76,7 +74,7 @@ async def lifespan(app: FastAPI):
         dependencies.initialize_dependencies(
             db=database,
             qdrant=qdrant_manager,
-            models=model_manager,
+            embeddings=embedding_models,
             ollama=ollama_client,
             tools=global_tool_registry
         )
@@ -94,9 +92,9 @@ async def lifespan(app: FastAPI):
     
     finally:
         try:
-            if dependencies.model_manager:
+            if dependencies.embedding_models:
                 logger.info("Cleaning up model resources...")
-                dependencies.model_manager.cleanup()
+                dependencies.embedding_models.cleanup()
             
             if dependencies.database and dependencies.database.is_connected:
                 await dependencies.database.disconnect()
