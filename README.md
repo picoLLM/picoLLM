@@ -16,6 +16,7 @@ Platform agnostic LLM inference playground that supports OpenAI and Anthropic fo
 + Custom tool support in-app
 + Huggingface datasets & transformers integration
 + Qdrant database with collection builder
++ CPU optimized embeddings with ONNX runtime
 + In-conversation memory
 + Postgres chat history
 + Custom themes for code blocks
