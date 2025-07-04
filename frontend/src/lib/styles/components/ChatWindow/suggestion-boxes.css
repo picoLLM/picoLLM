@@ -1,5 +1,5 @@
 .suggestions-container {
-  padding: 1.5rem;
+  padding: clamp(1rem, 4vw, 1.5rem);
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 16px;
@@ -9,14 +9,14 @@
 }
 
 .model-info {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
+  margin-bottom: clamp(1rem, 4vw, 1.5rem);
+  padding-bottom: clamp(1rem, 4vw, 1.5rem);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .model-header {
   margin-bottom: 0.75rem;
-  min-height: 3.5rem; /* Fixed height for provider + model name */
+  min-height: 3.5rem;
 }
 
 .model-provider {
@@ -25,9 +25,9 @@
   gap: 0.5rem;
   margin-bottom: 0.25rem;
   color: rgba(255, 255, 255, 0.6);
-  font-size: 0.813rem;
+  font-size: clamp(0.75rem, 2vw, 0.813rem);
   font-weight: 500;
-  height: 1.25rem; /* Fixed height */
+  height: 1.25rem;
 }
 
 .provider-icon {
@@ -38,21 +38,35 @@
 }
 
 .model-name {
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 2.5vw, 1.125rem);
   font-weight: 600;
   color: rgba(255, 255, 255, 0.95);
   line-height: 1.4;
-  min-height: 1.75rem; /* Fixed height even when empty */
+  min-height: 1.75rem;
+  display: flex;
+  align-items: center;
 }
 
 .model-capabilities {
   display: flex;
-  flex-wrap: nowrap; /* Prevent wrapping */
   gap: 0.5rem;
   margin-top: 0.75rem;
   min-height: 32px;
-  max-height: 32px; /* Fixed single row height */
-  overflow: hidden; /* Hide any overflow */
+  max-height: 32px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.model-capabilities::-webkit-scrollbar {
+  height: 4px;
+}
+
+.model-capabilities::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
 }
 
 .capability-tag {
@@ -63,10 +77,12 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
-  font-size: 0.75rem;
+  font-size: clamp(0.688rem, 1.5vw, 0.75rem);
   font-weight: 500;
   color: rgba(255, 255, 255, 0.8);
-  height: 32px; /* Explicit height */
+  height: 32px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .capability-tag :global(.capability-icon) {
@@ -84,7 +100,7 @@
 }
 
 .suggestions-section {
-  margin-top: 1.5rem;
+  margin-top: clamp(1rem, 4vw, 1.5rem);
   min-height: 120px;
 }
 
@@ -94,7 +110,7 @@
   gap: 0.5rem;
   margin-bottom: 1rem;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 0.875rem;
+  font-size: clamp(0.813rem, 2vw, 0.875rem);
   font-weight: 500;
 }
 
@@ -104,22 +120,22 @@
 
 .suggestion-boxes {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: clamp(0.5rem, 2vw, 0.75rem);
 }
 
 .suggestion-box {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
-  padding: 1rem 1.25rem;
+  gap: clamp(0.75rem, 2vw, 0.875rem);
+  padding: clamp(0.875rem, 2.5vw, 1rem) clamp(1rem, 3vw, 1.25rem);
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
-  font-size: 0.875rem;
+  font-size: clamp(0.813rem, 2vw, 0.875rem);
   color: rgba(255, 255, 255, 0.85);
   width: 100%;
   font-weight: 450;
@@ -140,8 +156,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: clamp(32px, 8vw, 36px);
+  height: clamp(32px, 8vw, 36px);
   background: rgba(var(--icon-color-rgb, 0, 0, 0), 0.1);
   border-radius: 10px;
   flex-shrink: 0;
@@ -155,6 +171,8 @@
 
 .icon-wrapper :global(svg) {
   color: var(--icon-color);
+  width: clamp(18px, 4.5vw, 20px);
+  height: clamp(18px, 4.5vw, 20px);
 }
 
 .suggestion-text {
@@ -162,79 +180,42 @@
   line-height: 1.4;
 }
 
-.model-name {
-  min-height: 1.75rem;
-  display: flex;
-  align-items: center;
-}
+/* RGB color variables */
+.suggestion-box[style*="#8B5CF6"] { --icon-color-rgb: 139, 92, 246; }
+.suggestion-box[style*="#10B981"] { --icon-color-rgb: 16, 185, 129; }
+.suggestion-box[style*="#3B82F6"] { --icon-color-rgb: 59, 130, 246; }
+.suggestion-box[style*="#EC4899"] { --icon-color-rgb: 236, 72, 153; }
+.suggestion-box[style*="#F59E0B"] { --icon-color-rgb: 245, 158, 11; }
+.suggestion-box[style*="#06B6D4"] { --icon-color-rgb: 6, 182, 212; }
 
-.capability-placeholder {
-  display: inline-block;
-  height: 32px;
-  visibility: hidden;
-}
-
-/* Add RGB color variables for semi-transparent backgrounds */
-.suggestion-box[style*="#8B5CF6"] {
-  --icon-color-rgb: 139, 92, 246;
-}
-
-.suggestion-box[style*="#10B981"] {
-  --icon-color-rgb: 16, 185, 129;
-}
-
-.suggestion-box[style*="#3B82F6"] {
-  --icon-color-rgb: 59, 130, 246;
-}
-
-.suggestion-box[style*="#EC4899"] {
-  --icon-color-rgb: 236, 72, 153;
-}
-
-.suggestion-box[style*="#F59E0B"] {
-  --icon-color-rgb: 245, 158, 11;
-}
-
-.suggestion-box[style*="#06B6D4"] {
-  --icon-color-rgb: 6, 182, 212;
-}
-
-/* Dark mode optimizations */
-@media (prefers-color-scheme: light) {
+/* Mobile optimizations */
+@media (max-width: 640px) {
   .suggestions-container {
-    background: rgba(0, 0, 0, 0.02);
-    border-color: rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    min-height: 200px;
   }
-
-  .model-info {
-    border-bottom-color: rgba(0, 0, 0, 0.06);
+  
+  .model-capabilities {
+    margin-top: 0.5rem;
   }
-
-  .model-provider {
-    color: rgba(0, 0, 0, 0.6);
+  
+  .suggestion-boxes {
+    grid-template-columns: 1fr;
   }
-
-  .model-name {
-    color: rgba(0, 0, 0, 0.95);
-  }
-
-  .capability-tag {
-    background: rgba(0, 0, 0, 0.05);
-    border-color: rgba(0, 0, 0, 0.08);
-    color: rgba(0, 0, 0, 0.8);
-  }
-
-  .suggestions-header {
-    color: rgba(0, 0, 0, 0.7);
-  }
-
+  
   .suggestion-box {
-    background: rgba(0, 0, 0, 0.03);
-    border-color: rgba(0, 0, 0, 0.06);
-    color: rgba(0, 0, 0, 0.85);
+    border-radius: 10px;
   }
-
-  .suggestion-box:hover {
-    background: rgba(0, 0, 0, 0.06);
+  
+  .icon-wrapper {
+    border-radius: 8px;
   }
 }
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .suggestion-boxes {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
